@@ -1,5 +1,18 @@
 #include "DxLib.h"
 
+// 車の画像を管理する定数と配列
+enum { RED, YELLOW, BLUE, TRUCK};
+const int CAR_MAX = 4;
+int imagCar[CAR_MAX];
+const int CAR_W[CAR_MAX] = { 32, 26, 26, 40 };
+const int CAR_H[CAR_MAX] = { 48, 48, 48, 100 };
+
+// 車を表示する関数
+void drawCar(int x, int y, int type) 
+{
+	DrawGraph(x - CAR_W[type] / 2, y - CAR_H[type] / 2, imagCar[type], TRUE);
+}
+
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
 	// 定数
@@ -15,6 +28,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	int bgY = 0; // 道路をスクロールさせるための変数
 	int imgBG = LoadGraph("image/bg.png"); // 背景の画像
 
+	// 車の画像を配列に読み込む
+	imagCar[RED] = LoadGraph("image/car_red.png");
+	imagCar[YELLOW] = LoadGraph("image/car_yellow.png");
+	imagCar[BLUE] = LoadGraph("image/car_blue.png");
+	imagCar[TRUCK] = LoadGraph("image/truck.png");
+
 	while (1) // メインループ
 	{
 		ClearDrawScreen(); // 画面をクリアする
@@ -24,6 +43,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		if (bgY >= HEIGHT) bgY = bgY - HEIGHT;
 		DrawGraph(0, bgY - HEIGHT, imgBG, FALSE);
 		DrawGraph(0, bgY, imgBG, FALSE);
+
+		// 車両の表示　※制作過程
+		drawCar(300, 360, RED); // 赤
+		drawCar(340, 360, YELLOW); // 黄色
+		drawCar(380, 360, BLUE); // 青
+		drawCar(420, 360, TRUCK); // トラック
 
 		ScreenFlip(); // 裏画面の内容を表画面に反映させる
 		WaitTimer(16); // 一定時間待つ
