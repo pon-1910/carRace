@@ -34,6 +34,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	imagCar[BLUE] = LoadGraph("image/car_blue.png");
 	imagCar[TRUCK] = LoadGraph("image/truck.png");
 
+	//　プレイヤーの車用の変数
+	int playerX = WIDTH / 2;
+	int playerY = HEIGHT / 2;
+	int playerType = RED;
+
 	while (1) // メインループ
 	{
 		ClearDrawScreen(); // 画面をクリアする
@@ -49,6 +54,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		drawCar(340, 360, YELLOW); // 黄色
 		drawCar(380, 360, BLUE); // 青
 		drawCar(420, 360, TRUCK); // トラック
+
+		// プレイヤーの車を動かす処理
+		GetMousePoint(&playerX, &playerY);
+		if (playerX < 260) playerX = 260;
+		if (playerX > 460) playerX = 460;
+		if (playerY < 40) playerY = 40;
+		if (playerY > 600) playerY = 600;
+		drawCar(playerX, playerY, playerType);
 
 		ScreenFlip(); // 裏画面の内容を表画面に反映させる
 		WaitTimer(16); // 一定時間待つ
