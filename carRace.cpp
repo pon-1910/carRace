@@ -1,4 +1,5 @@
 #include "DxLib.h"
+#include <stdlib.h>
 
 // 車の画像を管理する定数と配列
 enum { RED, YELLOW, BLUE, TRUCK};
@@ -39,6 +40,16 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	int playerY = HEIGHT / 2;
 	int playerType = RED;
 
+	// コンピューターが動かす車用の配列
+	const int COM_MAX = 8;
+	int computerX[COM_MAX], computerY[COM_MAX], computerType[COM_MAX];
+	for (int i = 0; i < COM_MAX; i++) // 初期値の代入
+	{
+		computerX[i] = rand() % 180 + 270;
+		computerY[i] = -100;
+		computerType[i] = YELLOW + rand() % 3;
+	}
+
 	while (1) // メインループ
 	{
 		ClearDrawScreen(); // 画面をクリアする
@@ -49,12 +60,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		DrawGraph(0, bgY - HEIGHT, imgBG, FALSE);
 		DrawGraph(0, bgY, imgBG, FALSE);
 
-		// 車両の表示　※制作過程
-		drawCar(300, 360, RED); // 赤
-		drawCar(340, 360, YELLOW); // 黄色
-		drawCar(380, 360, BLUE); // 青
-		drawCar(420, 360, TRUCK); // トラック
-
 		// プレイヤーの車を動かす処理
 		GetMousePoint(&playerX, &playerY);
 		if (playerX < 260) playerX = 260;
@@ -62,6 +67,20 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		if (playerY < 40) playerY = 40;
 		if (playerY > 600) playerY = 600;
 		drawCar(playerX, playerY, playerType);
+
+		// コンピューターの車を動かす処理
+		for (int i = 0; i < COM_MAX; i++)
+		{
+			computerY[i] = computerY[i] + 1 + i;
+			// 画面の下から外に出たかを判定
+			if (computerY[i] > HEIGHT + 100)
+			{
+				computerX[i] = rand() % 180 + 270;
+				computerY[i] = -100;
+				computerType[i] = YELLOW + rand() % 3;
+			}
+			drawCar(computerX[i], computerY[i], computerType[i]);
+		}
 
 		ScreenFlip(); // 裏画面の内容を表画面に反映させる
 		WaitTimer(16); // 一定時間待つ
