@@ -79,6 +79,18 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				computerY[i] = -100;
 				computerType[i] = YELLOW + rand() % 3;
 			}
+			// ヒットチェック
+			int dx = abs(computerX[i] - playerX); // X軸方向のピクセル数
+			int dy = abs(computerY[i] - playerY); // Y軸方向のピクセル数
+			int wid = CAR_W[playerType] / 2 + CAR_W[computerType[i]] / 2 - 4;
+			int hei = CAR_H[playerType] / 2 + CAR_H[computerType[i]] / 2 - 4;
+			if (dx < wid && dy < hei) // 接触しているか
+			{
+				int col = GetColor(rand() % 256, rand() % 256, rand() % 256); // 重ねる色
+				SetDrawBlendMode(DX_BLENDMODE_ADD, 255); // 色を加算する設定
+				DrawBox(playerX - CAR_W[playerType] / 2, playerY - CAR_H[playerType] / 2, playerX + CAR_W[playerType] / 2, playerY + CAR_H[playerType] / 2, col, TRUE);
+				SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0); // 通常の描画に戻す
+			}
 			drawCar(computerX[i], computerY[i], computerType[i]);
 		}
 
