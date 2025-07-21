@@ -50,13 +50,18 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	// コンピューターが動かす車用の配列
 	const int COM_MAX = 8;
-	int computerX[COM_MAX], computerY[COM_MAX], computerType[COM_MAX];
+	int computerX[COM_MAX], computerY[COM_MAX], computerType[COM_MAX], computerFlag[COM_MAX];
 	for (int i = 0; i < COM_MAX; i++) // 初期値の代入
 	{
 		computerX[i] = rand() % 180 + 270;
 		computerY[i] = -100;
 		computerType[i] = YELLOW + rand() % 3;
+		computerFlag[i] = 0;
 	}
+
+	// スコアとハイスコアを代入する変数
+	int score = 0;
+	int highScore = 5000;
 
 	while (1) // メインループ
 	{
@@ -86,6 +91,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				computerX[i] = rand() % 180 + 270;
 				computerY[i] = -100;
 				computerType[i] = YELLOW + rand() % 3;
+				computerFlag[i] = 0;
 			}
 			// ヒットチェック
 			int dx = abs(computerX[i] - playerX); // X軸方向のピクセル数
@@ -99,12 +105,20 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				DrawBox(playerX - CAR_W[playerType] / 2, playerY - CAR_H[playerType] / 2, playerX + CAR_W[playerType] / 2, playerY + CAR_H[playerType] / 2, col, TRUE);
 				SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0); // 通常の描画に戻す
 			}
+
+			// 追い抜いたかを判定
+			if (computerY[i] > playerY && computerFlag[i] == 0)
+			{
+				computerFlag[i] = 1;
+				score += 100;
+				if (score > highScore) highScore = score;
+			}
 			drawCar(computerX[i], computerY[i], computerType[i]);
 		}
 
 		// スコアなどの表示
-		drawText(10, 10, 0x00ffff, "SCORE %d", 111, 30);
-		drawText(WIDTH - 200, 10, 0xffff00, "HI-SC %d", 22222, 30);
+		drawText(10, 10, 0x00ffff, "SCORE %d", score, 30);
+		drawText(WIDTH - 200, 10, 0xffff00, "HI-SC %d", highScore, 30);
 		drawText(10, HEIGHT - 40, 0x00ff00, "FUEL %d", 333, 30);
 		
 		ScreenFlip(); // 裏画面の内容を表画面に反映させる
