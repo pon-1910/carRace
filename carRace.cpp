@@ -14,6 +14,14 @@ void drawCar(int x, int y, int type)
 	DrawGraph(x - CAR_W[type] / 2, y - CAR_H[type] / 2, imagCar[type], TRUE);
 }
 
+// 影を付けた文字列を表示する関数
+void drawText(int x, int y, int col, const char* txt, int val, int siz)
+{
+	SetFontSize(siz);
+	DrawFormatString(x + 2, y + 2, 0x000000, txt, val);
+	DrawFormatString(x, y, col, txt, val);
+}
+
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
 	// 定数
@@ -94,6 +102,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			drawCar(computerX[i], computerY[i], computerType[i]);
 		}
 
+		// スコアなどの表示
+		drawText(10, 10, 0x00ffff, "SCORE %d", 111, 30);
+		drawText(WIDTH - 200, 10, 0xffff00, "HI-SC %d", 22222, 30);
+		drawText(10, HEIGHT - 40, 0x00ff00, "FUEL %d", 333, 30);
+		
 		ScreenFlip(); // 裏画面の内容を表画面に反映させる
 		WaitTimer(16); // 一定時間待つ
 		if (ProcessMessage() == -1) break; // Windows から情報を受け取りエラーが起きたら終了
