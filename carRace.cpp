@@ -63,6 +63,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	int score = 0;
 	int highScore = 5000;
 
+	// 燃料アイテム用の変数
+	int fuel = 0;
+	int fuelX = WIDTH / 2;
+	int fuelY = 0;
+	int imgFuel = LoadGraph("image/fuel.png");
+
 	while (1) // メインループ
 	{
 		ClearDrawScreen(); // 画面をクリアする
@@ -104,6 +110,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				SetDrawBlendMode(DX_BLENDMODE_ADD, 255); // 色を加算する設定
 				DrawBox(playerX - CAR_W[playerType] / 2, playerY - CAR_H[playerType] / 2, playerX + CAR_W[playerType] / 2, playerY + CAR_H[playerType] / 2, col, TRUE);
 				SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0); // 通常の描画に戻す
+				fuel -= 10;
 			}
 
 			// 追い抜いたかを判定
@@ -116,10 +123,24 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			drawCar(computerX[i], computerY[i], computerType[i]);
 		}
 
+		// 燃料アイテムの処理
+		fuelY += 4;
+		if (fuelY > HEIGHT) fuelY = -100;
+		if (abs(fuelX - playerX) < CAR_W[playerType] / 2 + 12 && abs(fuelY - playerY) < CAR_H[playerType] / 2 + 12)
+		{
+			fuelX = rand() % 180 + 270;
+			fuelY = -500;
+			fuel += 200;
+		}
+		DrawGraph(fuelX -12, fuelY - 12, imgFuel, TRUE);
+
 		// スコアなどの表示
 		drawText(10, 10, 0x00ffff, "SCORE %d", score, 30);
 		drawText(WIDTH - 200, 10, 0xffff00, "HI-SC %d", highScore, 30);
-		drawText(10, HEIGHT - 40, 0x00ff00, "FUEL %d", 333, 30);
+		int col = 0x00ff00; // 燃料の値を表示する色
+		if (fuel < 400) col = 0xffc000;
+		if (fuel < 200) col = 0xff0000;
+		drawText(10, HEIGHT - 40, col, "FUEL %d", fuel, 30);
 		
 		ScreenFlip(); // 裏画面の内容を表画面に反映させる
 		WaitTimer(16); // 一定時間待つ
